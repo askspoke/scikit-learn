@@ -20,7 +20,7 @@ from .coordinate_descent import (Lasso, ElasticNet, LassoCV, ElasticNetCV,
                                  MultiTaskLassoCV)
 from .huber import HuberRegressor
 from .sgd_fast import Hinge, Log, ModifiedHuber, SquaredLoss, Huber
-from .stochastic_gradient import SGDClassifier, SGDRegressor
+from .stochastic_gradient import SGDClassifier
 from .ridge import (Ridge, RidgeCV, RidgeClassifier, RidgeClassifierCV,
                     ridge_regression)
 from .logistic import (LogisticRegression, LogisticRegressionCV,
@@ -28,7 +28,6 @@ from .logistic import (LogisticRegression, LogisticRegressionCV,
 from .omp import (orthogonal_mp, orthogonal_mp_gram, OrthogonalMatchingPursuit,
                   OrthogonalMatchingPursuitCV)
 from .passive_aggressive import PassiveAggressiveClassifier
-from .passive_aggressive import PassiveAggressiveRegressor
 from .perceptron import Perceptron
 from .randomized_l1 import (RandomizedLasso, RandomizedLogisticRegression,
                             lasso_stability_path)
