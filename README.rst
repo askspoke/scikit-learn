@@ -25,6 +25,24 @@
 .. |DOI| image:: https://zenodo.org/badge/21369/scikit-learn/scikit-learn.svg
 .. _DOI: https://zenodo.org/badge/latestdoi/21369/scikit-learn/scikit-learn
 
+SGD-based online learning with scikit-learn with the ability to add or remove
+new classes.
+
+This branch is forked off of scikit-learn. The original SGD and Passive
+Aggressive classifier is changed to support addition and deletion of new classes.
+The changes are kinda hacky to YMMV.
+
+Here is a description of the changes:
+
+1. We now allow the partial_fit call to contain new classes in every round of online training.
+2. Also added the ability to remove classes.
+3. As a consequence, we have removed the ability to pre-specify classes and class_weights.
+4. Also removed all the regressors.
+5. As a consequence of this change, we now treat the binary classification problem also a multi class problem with two different label sets.
+6. Removed all tests with class weights and binary classification.
+
+
+
 scikit-learn
 ============
 
@@ -78,7 +96,7 @@ Development
 
 We welcome new contributors of all experience levels. The scikit-learn
 community goals are to be helpful, welcoming, and effective. The
-`Contributor's Guide <http://scikit-learn.org/stable/developers/index.html>`_ 
+`Contributor's Guide <http://scikit-learn.org/stable/developers/index.html>`_
 has detailed information about contributing code, documentation, tests, and
 more. We've included some basic information in this README.
 
