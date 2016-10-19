@@ -467,7 +467,7 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
         if len(self.classes_) == 1:
             return self.classes_[0], scores[0]
         indices = scores.argmax(axis=1)
-        return (self.classes_[indices], scores[0][indices])
+        return (self.classes_[indices][0], scores[0][indices][0])
 
     def _fit_multiclass(self, X, y, alpha, C, learning_rate,
                         sample_weight, n_iter):

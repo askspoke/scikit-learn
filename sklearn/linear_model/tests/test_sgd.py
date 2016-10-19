@@ -792,10 +792,13 @@ class DenseSGDClassifierTestCase(unittest.TestCase, CommonTest):
         clf = self.factory(alpha=0.01)
 
         clf.partial_fit(X2[:third], Y2[:third])
+        print(clf.predict_and_score(X2[0]))
+
         predicted_label = clf.predict_and_score(X2[0])[0]
         assert_equal(predicted_label, Y2[0])
 
         clf.partial_fit(X2[third:sixth], Y2[third:sixth])
+        print(clf.predict_and_score(X2[third]))
         predicted_label = clf.predict_and_score(X2[third])[0]
         assert_equal(predicted_label, Y2[third])
 
