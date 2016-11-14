@@ -324,7 +324,7 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
         if self.classes_ is None or self.classes_.size == 0:
             return False
         result = np.where(self.classes_ == class_name)[0]
-        if result.size > 0:
+        if not result.size:
             return False
         index = result[0]
         try:
