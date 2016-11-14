@@ -13,6 +13,7 @@ from sklearn.utils.testing import raises
 from sklearn.utils.testing import assert_raises
 from sklearn.utils.testing import assert_false, assert_true
 from sklearn.utils.testing import assert_equal
+from sklearn.utils.testing import assert_not_equal
 from sklearn.utils.testing import assert_raises_regexp
 from sklearn.utils.testing import ignore_warnings
 
@@ -764,26 +765,45 @@ class DenseSGDClassifierTestCase(unittest.TestCase, CommonTest):
 
         clf.partial_fit(X2[:sixth], Y2[:sixth])
         label1, score1 = clf.predict_and_score(X2[0])
-
         clf.partial_fit(X2[sixth:], Y2[sixth:])
         assert_equal(clf.delete_class(Y2[sixth]), True)
         label2, score2 = clf.predict_and_score(X2[0])
         assert_equal(label1, label2)
 
     def test_partial_fit_multiclass_delete_old_class(self):
-        # Train with training data containing only 2 classes(d1), then add
-        # training data with the third class.
-        # Check that for an example in d1 the label before the third class was
-        # added is the same as the label after the third class is removed.
+        # Train with training data containing only 2 classes(d1), then deletes
+        # the second class. Check that the prediction for an example for the
+        # second class is now the first class.
         third = X2.shape[0] // 3
-        sixth = 2*third
+        sixth = 2 * third
         clf = self.factory(alpha=0.01)
 
-        clf.partial_fit(X2, Y2)
-        label1, score1 = clf.predict_and_score(X2[sixth])
+        clf.partial_fit(X2[:sixth], Y2[:sixth])
+        label1, score1 = clf.predict_and_score(X2[third])
         assert_equal(clf.delete_class(Y2[third]), True)
-        label2, score2 = clf.predict_and_score(X2[sixth])
-        assert_equal(label1, label2)
+        label2, score2 = clf.predict_and_score(X2[third])
+        assert_not_equal(label1, label2)
+
+    def test_partial_fit_multiclass_delete_one_class(self):
+        # Train with training data containing only one classes, and test
+        # deleting that class.
+        third = X2.shape[0] // 3
+        clf = self.factory(alpha=0.01)
+
+        clf.partial_fit(X2[:third], Y2[:third])
+        assert_equal(clf.delete_class(Y2[0]), True)
+
+    def test_partial_fit_multiclass_delete_wrong_class(self):
+        # Test that deleting a class for empty model returns False. Also test
+        # that when trained on two class, and when delete is called with the
+        # third class, it returns false.
+        # deleting that class.
+        sixth = 2 * (X2.shape[0] // 3)
+        clf = self.factory(alpha=0.01)
+        assert_equal(clf.delete_class(Y2[0]), False)
+
+        clf.partial_fit(X2[:sixth], Y2[:sixth])
+        assert_equal(clf.delete_class(Y2[sixth]), False)
 
 
     def test_partial_fit_multiclass_predict_correct(self):
