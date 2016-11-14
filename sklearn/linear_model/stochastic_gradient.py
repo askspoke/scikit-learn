@@ -324,15 +324,15 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
         if self.classes_ is None or self.classes_.size == 0:
             return False
         result = np.where(self.classes_ == class_name)[0]
-        if not result.size:
+        if result.size > 0:
             return False
         index = result[0]
         try:
-            print("classes before", self.classes_)
+            print("classes before deleting %s: %s", class_name, self.classes_)
             self.coef_ = np.delete(self.coef_, index, axis=0)
             self.intercept_ = np.delete(self.intercept_, index)
             self.classes_ = np.delete(self.classes_, index)
-            print("classes after", self.classes_)
+            print("classes after deleting %s: %s", class_name, self.classes_)
 
             if self.average > 0:
                 self.average_coef_ = np.delete(self.average_coef_, index)
