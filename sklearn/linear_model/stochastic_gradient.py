@@ -3,7 +3,7 @@
 #
 # License: BSD 3 clause
 """Classification and regression using Stochastic Gradient Descent (SGD)."""
-
+import heapq
 import numpy as np
 
 from abc import ABCMeta, abstractmethod
@@ -463,6 +463,28 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
         if len(self.classes_) == 1:
             return self.classes_[0], scores[0]
         indices = scores.argmax(axis=1)
+        return (self.classes_[indices][0], scores[0][indices][0])
+
+    def predict_and_score_multiple(self, X, topk):
+        """Predict class labels for samples in X.
+
+        Parameters
+        ----------
+        X : {array-like, sparse matrix}, shape = [n_samples, n_features]
+            Samples.
+
+        Returns
+        -------
+        C : array, shape = [n_samples]
+            Predicted class label per sample.
+        """
+        if self.classes_ is None or self.classes_.size == 0 or topk <= 0:
+            return (None, None)
+        scores = self.decision_function(X)
+        if len(self.classes_) == 1:
+            return self.classes_[0], scores[0]
+
+        indices = np.argsort(-scores, axis=1)[:min(self.classes_.size, topk)]
         return (self.classes_[indices][0], scores[0][indices][0])
 
     def _fit_multiclass(self, X, y, alpha, C, learning_rate,

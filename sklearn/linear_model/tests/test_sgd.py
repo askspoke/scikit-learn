@@ -8,6 +8,7 @@ from sklearn.utils.testing import assert_array_equal
 from sklearn.utils.testing import assert_almost_equal
 from sklearn.utils.testing import assert_array_almost_equal
 from sklearn.utils.testing import assert_greater
+from sklearn.utils.testing import assert_greater_equal
 from sklearn.utils.testing import assert_less
 from sklearn.utils.testing import raises
 from sklearn.utils.testing import assert_raises
@@ -805,20 +806,17 @@ class DenseSGDClassifierTestCase(unittest.TestCase, CommonTest):
         clf.partial_fit(X2[:sixth], Y2[:sixth])
         assert_equal(clf.delete_class(Y2[sixth]), False)
 
-
     def test_partial_fit_multiclass_predict_correct(self):
         third = X2.shape[0] // 3
         sixth = 2*third
         clf = self.factory(alpha=0.01)
 
         clf.partial_fit(X2[:third], Y2[:third])
-        print(clf.predict_and_score(X2[0]))
 
         predicted_label = clf.predict_and_score(X2[0])[0]
         assert_equal(predicted_label, Y2[0])
 
         clf.partial_fit(X2[third:sixth], Y2[third:sixth])
-        print(clf.predict_and_score(X2[third]))
         predicted_label = clf.predict_and_score(X2[third])[0]
         assert_equal(predicted_label, Y2[third])
 
@@ -828,6 +826,40 @@ class DenseSGDClassifierTestCase(unittest.TestCase, CommonTest):
 
         predicted_label = clf.predict_and_score(X2[sixth])[0]
         assert_equal(predicted_label, Y2[sixth])
+
+    def test_partial_fit_multiclass_predict_multiple(self):
+        third = X2.shape[0] // 3
+        sixth = 2*third
+        clf = self.factory(alpha=0.01)
+
+        clf.partial_fit(X2, Y2)
+        (classes, scores) = clf.predict_and_score_multiple(X2[0], 3)
+        assert_equal(classes.size, 3)
+        assert_equal(scores.size, 3)
+        assert_greater_equal(scores[0], scores[1])
+        assert_greater_equal(scores[1], scores[2])
+
+    def test_partial_fit_multiclass_predict_multiple_too_many_classes(self):
+        third = X2.shape[0] // 3
+        sixth = 2*third
+        clf = self.factory(alpha=0.01)
+
+        clf.partial_fit(X2, Y2)
+        (classes, scores) = clf.predict_and_score_multiple(X2[0], 4)
+        assert_equal(classes.size, 3)
+        assert_equal(scores.size, 3)
+        assert_greater_equal(scores[0], scores[1])
+        assert_greater_equal(scores[1], scores[2])
+
+    def test_partial_fit_multiclass_predict_multiple_zero_classes(self):
+        third = X2.shape[0] // 3
+        sixth = 2*third
+        clf = self.factory(alpha=0.01)
+
+        clf.partial_fit(X2, Y2)
+        (classes, scores) = clf.predict_and_score_multiple(X2[0], 0)
+        assert_equal(classes, None)
+        assert_equal(scores, None)
 
 
     def test_partial_fit_multiclass_average(self):
