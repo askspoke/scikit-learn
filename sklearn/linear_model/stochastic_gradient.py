@@ -483,8 +483,10 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
         scores = self.decision_function(X)
         if len(self.classes_) == 1:
             return self.classes_[0], scores[0]
-
-        indices = np.argsort(-scores, axis=1)[:min(self.classes_.size, topk)]
+        print(scores)
+        indices = np.argsort(
+            -scores, axis=1)[...,:min(self.classes_.size, topk)]
+        print("indices", indices)
         return (self.classes_[indices][0], scores[0][indices][0])
 
     def _fit_multiclass(self, X, y, alpha, C, learning_rate,

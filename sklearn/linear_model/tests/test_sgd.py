@@ -839,6 +839,18 @@ class DenseSGDClassifierTestCase(unittest.TestCase, CommonTest):
         assert_greater_equal(scores[0], scores[1])
         assert_greater_equal(scores[1], scores[2])
 
+    def test_partial_fit_multiclass_predict_multiple_less_classes(self):
+        third = X2.shape[0] // 3
+        sixth = 2*third
+        clf = self.factory(alpha=0.01)
+
+        clf.partial_fit(X2, Y2)
+        (classes, scores) = clf.predict_and_score_multiple(X2[0], 2)
+        assert_equal(classes.size, 2)
+        assert_equal(scores.size, 2)
+        assert_greater_equal(scores[0], scores[1])
+        assert_array_equal(classes[0], Y2[0])
+
     def test_partial_fit_multiclass_predict_multiple_too_many_classes(self):
         third = X2.shape[0] // 3
         sixth = 2*third
@@ -860,6 +872,16 @@ class DenseSGDClassifierTestCase(unittest.TestCase, CommonTest):
         (classes, scores) = clf.predict_and_score_multiple(X2[0], 0)
         assert_equal(classes, None)
         assert_equal(scores, None)
+
+    def test_partial_fit_multiclass_predict_multiple_one_classes(self):
+        third = X2.shape[0] // 3
+        sixth = 2*third
+        clf = self.factory(alpha=0.01)
+
+        clf.partial_fit(X2, Y2)
+        (classes, scores) = clf.predict_and_score_multiple(X2[0], 1)
+        print(classes)
+        assert_equal(classes, Y2[1])
 
 
     def test_partial_fit_multiclass_average(self):
