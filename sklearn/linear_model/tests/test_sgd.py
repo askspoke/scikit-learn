@@ -567,19 +567,14 @@ class DenseSGDClassifierTestCase(unittest.TestCase, CommonTest):
     #                        class_weight=None)
     #     clf.fit(X, y)
     #     assert_array_equal(clf.predict([[0.2, -1.0]]), np.array([1]))
-    #     print("coef1_", clf.coef_)
-    #     print("intercept1_", clf.intercept_)
+
     #     # we give a small weights to class 1
     #     clf = self.factory(alpha=0.1, n_iter=1000, fit_intercept=False,
     #                        class_weight={1: 0.001})
     #     clf.fit(X, y)
 
-    #     print("coef2_", clf.coef_)
-    #     print("intercept2_", clf.intercept_)
     #     # now the hyperplane should rotate clock-wise and
     #     # the prediction on this point should shift
-    #     scores = clf.decision_function([[0.2, -1.0]])
-    #     print("scores", scores)
     #     assert_array_equal(clf.predict([[0.2, -1.0]]), np.array([-1]))
 
     # def test_equal_class_weight(self):
@@ -610,11 +605,11 @@ class DenseSGDClassifierTestCase(unittest.TestCase, CommonTest):
     #     clf = self.factory(alpha=0.1, n_iter=1000, class_weight=[0.5])
     #     clf.fit(X, Y)
 
-    # Class_weights is broken. Need to figure out why.
     # def test_weights_multiplied(self):
     #     # Tests that class_weight and sample_weight are multiplicative
-    #     class_weights = {1: .0, 2: .3}
-    #     sample_weights = np.random.random(Y4.shape[0])
+    #     class_weights = {1: .6, 2: .3}
+    #     rng = np.random.RandomState(0)
+    #     sample_weights = rng.random_sample(Y4.shape[0])
     #     multiplied_together = np.copy(sample_weights)
     #     multiplied_together[Y4 == 1] *= class_weights[1]
     #     multiplied_together[Y4 == 2] *= class_weights[2]
