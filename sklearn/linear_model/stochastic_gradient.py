@@ -69,16 +69,18 @@ class BaseSGD(six.with_metaclass(ABCMeta, BaseEstimator, SparseCoefMixin)):
         self.average = average
 
         self._validate_params()
+        self.intercept_ = None
 
         self.coef_ = None
-        if fit_intercept:
-            self.intercept_ = None
+        # if fit_intercept:
+        #     self.intercept_ = None
 
         if self.average > 0:
             self.standard_coef_ = None
             self.average_coef_ = None
-            if fit_intercept:
-                self.average_intercept_ = None
+            self.average_intercept_ = None
+            # if fit_intercept:
+            #     self.average_intercept_ = None
         # iteration count for learning rate schedule
         # must not be int (e.g. if ``learning_rate=='optimal'``)
         self.t_ = None
@@ -193,7 +195,6 @@ class BaseSGD(six.with_metaclass(ABCMeta, BaseEstimator, SparseCoefMixin)):
         # initialize average parameters
         if self.average > 0:
             self.standard_coef_ = self.coef_
-            self.standard_intercept_ = self.intercept_
             if self.average_coef_ is not None:
                 # resize average parameters
                 self.average_coef_.resize(self.coef_.shape, refcheck=False)
@@ -202,6 +203,7 @@ class BaseSGD(six.with_metaclass(ABCMeta, BaseEstimator, SparseCoefMixin)):
                 self.average_coef_ = np.zeros(self.coef_.shape,
                                               dtype=np.float64,
                                               order="C")
+            self.standard_intercept_ = self.intercept_
             if self.average_intercept_ is not None:
                 self.average_intercept_.resize(self.intercept_.shape,
                                                 refcheck=False)
