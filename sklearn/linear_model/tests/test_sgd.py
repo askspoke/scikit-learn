@@ -822,27 +822,18 @@ class DenseSGDClassifierTestCase(unittest.TestCase, CommonTest):
         predicted_label = clf.predict_and_score(X2[sixth])[0]
         assert_equal(predicted_label, Y2[sixth])
 
-    def test_partial_fit_multiclass_predict_correct_probs(self):
+    def test_multiclass_score(self):
         third = X2.shape[0] // 3
         sixth = 2*third
-        clf = self.factory(alpha=0.01, loss='log')
+        clf = self.factory(alpha=0.01)
 
         clf.partial_fit(X2[:third], Y2[:third])
+        scores = clf.score(X2[0])
+        assert_equal(len(scores), 1)
 
-        predicted_prob = clf.predict_and_score(X2[0], True)[1]
-        print("predicted_prob", predicted_prob)
-        assert_greater(predicted_prob, 0.9)
-
-        clf.partial_fit(X2[third:sixth], Y2[third:sixth])
-        predicted_prob = clf.predict_and_score(X2[third], True)[1]
-        assert_greater(predicted_prob, 0.5)
-
-        clf.partial_fit(X2[sixth:], Y2[sixth:])
-        predicted_prob = clf.predict_and_score(X2[third], True)[1]
-        assert_greater(predicted_prob, 0.33)
-
-        predicted_prob = clf.predict_and_score(X2[sixth], True)[1]
-        assert_greater(predicted_prob, 0.33)
+        clf.partial_fit(X2[third:], Y2[third:])
+        scores = clf.score(X2[sixth])
+        assert_equal(len(scores), 3)
 
     def test_partial_fit_multiclass_predict_multiple(self):
         third = X2.shape[0] // 3
@@ -851,18 +842,6 @@ class DenseSGDClassifierTestCase(unittest.TestCase, CommonTest):
 
         clf.partial_fit(X2, Y2)
         (classes, scores) = clf.predict_and_score_multiple(X2[0], 3)
-        assert_equal(classes.size, 3)
-        assert_equal(scores.size, 3)
-        assert_greater_equal(scores[0], scores[1])
-        assert_greater_equal(scores[1], scores[2])
-
-    def test_partial_fit_multiclass_predict_multiple_with_probs(self):
-        third = X2.shape[0] // 3
-        sixth = 2*third
-        clf = self.factory(alpha=0.01, loss='log')
-
-        clf.partial_fit(X2, Y2)
-        (classes, scores) = clf.predict_and_score_multiple(X2[0], 3, True)
         assert_equal(classes.size, 3)
         assert_equal(scores.size, 3)
         assert_greater_equal(scores[0], scores[1])
@@ -911,7 +890,6 @@ class DenseSGDClassifierTestCase(unittest.TestCase, CommonTest):
         (classes, scores) = clf.predict_and_score_multiple(X2[0], 1)
         print(classes)
         assert_equal(classes, Y2[1])
-
 
     def test_partial_fit_multiclass_average(self):
         third = X2.shape[0] // 3
