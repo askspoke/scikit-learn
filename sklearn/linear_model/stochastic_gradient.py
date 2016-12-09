@@ -446,7 +446,7 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
             # intercept is a float, need to convert it to an array of length 1
             self.intercept_ = np.atleast_1d(intercept)
 
-    def predict_and_score(self, X, predict_probabilities=False):
+    def predict_and_score(self, X):
         """Predict class labels for samples in X.
 
         Parameters
@@ -461,18 +461,13 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
         """
         if self.classes_ is None or self.classes_.size == 0:
             return (None, None)
-        if predict_probabilities:
-            scores = self.predict_proba(X)
-        else:
-            scores = self.decision_function(X)
-
-        print("scores", scores)
+        scores = self.decision_function(X)
         if len(self.classes_) == 1:
             return self.classes_[0], scores[0]
         indices = scores.argmax(axis=1)
         return (self.classes_[indices][0], scores[0][indices][0])
 
-    def predict_and_score_multiple(self, X, topk, predict_probabilities=False):
+    def predict_and_score_multiple(self, X, topk):
         """Predict class labels for samples in X.
 
         Parameters
@@ -487,10 +482,7 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
         """
         if self.classes_ is None or self.classes_.size == 0 or topk <= 0:
             return (None, None)
-        if predict_probabilities:
-            scores = self.predict_proba(X)
-        else:
-            scores = self.decision_function(X)
+        scores = self.decision_function(X)
         if len(self.classes_) == 1:
             return self.classes_[0], scores[0]
         print(scores)
@@ -781,26 +773,6 @@ class SGDClassifier(BaseSGDClassifier, _LearntSelectorMixin):
             raise AttributeError("probability estimates are not available for"
                                  " loss=%r" % self.loss)
 
-    def _compute_prob_lr_always_multiclass(self, X):
-        """Probability estimation for OvR logistic regression.
-
-        One class probabilities are computed as
-        1. / (1. + np.exp(-self.decision_function(X)));
-        multiclass is handled by normalizing that over all classes.
-        """
-        prob = self.decision_function(X)
-        prob *= -1
-        np.exp(prob, prob)
-        prob += 1
-        np.reciprocal(prob, prob)
-        if prob.ndim == 1:
-            return prob
-        else:
-            # OvR normalization, like LibLinear's predict_probability
-            prob /= prob.sum(axis=1).reshape((prob.shape[0], -1))
-            return prob
-
-
     @property
     def predict_proba(self):
         """Probability estimates.
@@ -842,7 +814,7 @@ class SGDClassifier(BaseSGDClassifier, _LearntSelectorMixin):
 
     def _predict_proba(self, X):
         if self.loss == "log":
-            return self._compute_prob_lr_always_multiclass(X)
+            return self._predict_proba_lr(X)
 
         elif self.loss == "modified_huber":
             scores = self.decision_function(X)
