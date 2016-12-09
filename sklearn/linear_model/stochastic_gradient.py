@@ -467,6 +467,26 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
         indices = scores.argmax(axis=1)
         return (self.classes_[indices][0], scores[0][indices][0])
 
+    def score(self, X):
+        """Predict class labels for samples in X.
+
+        Parameters
+        ----------
+        X : {array-like, sparse matrix}, shape = [n_samples, n_features]
+            Samples.
+
+        Returns
+        -------
+        C : array, shape = [n_samples]
+            Predicted class label per sample.
+        """
+        if self.classes_ is None or self.classes_.size == 0:
+            return []
+        scores = self.decision_function(X)
+        if len(self.classes_) == 1:
+            return scores
+        return scores[0]
+
     def predict_and_score_multiple(self, X, topk):
         """Predict class labels for samples in X.
 
