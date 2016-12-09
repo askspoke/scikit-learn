@@ -468,7 +468,7 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
         return (self.classes_[indices][0], scores[0][indices][0])
 
     def score(self, X):
-        """Predict class labels for samples in X.
+        """Returns scores of all classes for X.
 
         Parameters
         ----------
@@ -477,8 +477,8 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
 
         Returns
         -------
-        C : array, shape = [n_samples]
-            Predicted class label per sample.
+        C : array, shape = [n_samples, n_classes]
+            Predicted scores of each class per sample.
         """
         if self.classes_ is None or self.classes_.size == 0:
             return []
