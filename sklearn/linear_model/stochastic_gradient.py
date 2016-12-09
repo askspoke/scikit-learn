@@ -481,7 +481,7 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
             Predicted scores of each class per sample.
         """
         if self.classes_ is None or self.classes_.size == 0:
-            return []
+            return [], []
         scores = self.decision_function(X)
         if len(self.classes_) == 1:
             return (self.classes_, scores)
