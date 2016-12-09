@@ -484,8 +484,8 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
             return []
         scores = self.decision_function(X)
         if len(self.classes_) == 1:
-            return scores
-        return scores[0]
+            return (self.classes_, scores)
+        return (self.classes_, scores[0])
 
     def predict_and_score_multiple(self, X, topk):
         """Predict class labels for samples in X.
