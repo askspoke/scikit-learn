@@ -777,7 +777,7 @@ class SGDClassifier(BaseSGDClassifier, _LearntSelectorMixin):
     def _check_proba(self):
         check_is_fitted(self, "t_")
 
-        if self.loss not in ("log", "modified_huber"):
+        if self.loss not in ("log"):
             raise AttributeError("probability estimates are not available for"
                                  " loss=%r" % self.loss)
 
