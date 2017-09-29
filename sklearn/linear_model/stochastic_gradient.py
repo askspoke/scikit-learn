@@ -453,8 +453,10 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
 
         Returns
         -------
-        C : array, shape = [n_samples]
-            Predicted class label per sample.
+        (label, score) where
+        label: array, shape = [n_samples]. Predicted class label per sample.
+        scire: array, shape = [n_samples]. Score of predicted class label per
+            sample.
         """
         if self.classes_ is None or self.classes_.size == 0:
             return (None, None)
@@ -477,9 +479,9 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
 
         Returns
         -------
-        (label, score) where
-        label: array(int), shape = [n_samples]
-        score: array(float), shape = [n_samples]
+        (labels, scores) where
+        labels: array(int), shape = [n_samples]
+        scores: array(float), shape = [n_samples]
             Class labels sorted by their score and their scores per sample.
         """
         if self.classes_ is None or self.classes_.size == 0 or topk <= 0:
