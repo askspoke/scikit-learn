@@ -453,49 +453,36 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
 
         Returns
         -------
-        C : array, shape = [n_samples]
-            Predicted class label per sample.
+        (label, score) where
+        label: array, shape = [n_samples]. Predicted class label per sample.
+        scire: array, shape = [n_samples]. Score of predicted class label per
+            sample.
         """
         if self.classes_ is None or self.classes_.size == 0:
             return (None, None)
         scores = self.decision_function(X)
         if len(self.classes_) == 1:
             return self.classes_[0], scores[0]
-        indices = scores.argmax(axis=1)
-        return (self.classes_[indices][0], scores[0][indices][0])
-
-    def score(self, X):
-        """Returns scores of all classes for X.
-
-        Parameters
-        ----------
-        X : {array-like, sparse matrix}, shape = [n_samples, n_features]
-            Samples.
-
-        Returns
-        -------
-        C : array, shape = [n_samples, n_classes]
-            Predicted scores of each class per sample.
-        """
-        if self.classes_ is None or self.classes_.size == 0:
-            return [], []
-        scores = self.decision_function(X)
-        if len(self.classes_) == 1:
-            return (self.classes_, scores)
-        return (self.classes_, scores[0])
+        index = scores.argmax(axis=1)
+        return (self.classes_[index][0], scores[0][index][0])
 
     def predict_and_score_multiple(self, X, topk):
-        """Predict class labels for samples in X.
+        """Predicts multiple class labels in sorted order of their scores and
+        returns a tuple containing arrays of their labels and array of their
+        scores.
 
         Parameters
         ----------
         X : {array-like, sparse matrix}, shape = [n_samples, n_features]
             Samples.
+        topk: int. top k labels to output.
 
         Returns
         -------
-        C : array, shape = [n_samples]
-            Predicted class label per sample.
+        (labels, scores) where
+        labels: array(int), shape = [n_samples]
+        scores: array(float), shape = [n_samples]
+            Class labels sorted by their score and their scores per sample.
         """
         if self.classes_ is None or self.classes_.size == 0 or topk <= 0:
             return (None, None)

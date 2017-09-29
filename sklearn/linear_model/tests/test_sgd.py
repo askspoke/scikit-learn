@@ -822,21 +822,6 @@ class DenseSGDClassifierTestCase(unittest.TestCase, CommonTest):
         predicted_label = clf.predict_and_score(X2[sixth])[0]
         assert_equal(predicted_label, Y2[sixth])
 
-    def test_multiclass_score(self):
-        third = X2.shape[0] // 3
-        sixth = 2*third
-        clf = self.factory(alpha=0.01)
-
-        clf.partial_fit(X2[:third], Y2[:third])
-        scores, classes = clf.score(X2[0])
-        assert_equal(len(scores), 1)
-        assert_equal(len(classes), 1)
-
-        clf.partial_fit(X2[third:], Y2[third:])
-        scores, classes = clf.score(X2[sixth])
-        assert_equal(len(scores), 3)
-        assert_equal(len(classes), 3)
-
     def test_partial_fit_multiclass_predict_multiple(self):
         third = X2.shape[0] // 3
         sixth = 2*third
