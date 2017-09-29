@@ -330,11 +330,9 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
             return False
         index = result[0]
         try:
-            print("classes before deleting %s: %s", class_name, self.classes_)
             self.coef_ = np.delete(self.coef_, index, axis=0)
             self.intercept_ = np.delete(self.intercept_, index)
             self.classes_ = np.delete(self.classes_, index)
-            print("classes after deleting %s: %s", class_name, self.classes_)
 
             if self.average > 0:
                 self.average_coef_ = np.delete(self.average_coef_, index)
@@ -345,7 +343,7 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
                                                      index)
             return True
         except (IndexError, TypeError) as t:
-            print("Error deleting index: %d, for class: %s", index, class_name)
+            print('Error deleting index: %d, for class: %s', index, class_name)
             print(t)
             return False
 
@@ -369,7 +367,6 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
             new_unique_classes = np.setdiff1d(y, self.classes_)
             self.classes_ = np.concatenate((self.classes_, new_unique_classes))
 
-        #print("num existing classes", len(self.classes_))
         n_classes = self.classes_.shape[0]
 
         # Allocate datastructures from input arguments
@@ -505,10 +502,8 @@ class BaseSGDClassifier(six.with_metaclass(ABCMeta, BaseSGD,
         scores = self.decision_function(X)
         if len(self.classes_) == 1:
             return self.classes_[0], scores[0]
-        print(scores)
         indices = np.argsort(
             -scores, axis=1)[...,:min(self.classes_.size, topk)]
-        print("indices", indices)
         return (self.classes_[indices][0], scores[0][indices][0])
 
     def _fit_multiclass(self, X, y, alpha, C, learning_rate,
